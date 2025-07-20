@@ -1,6 +1,7 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
+const serverless = require('serverless-http');
 
 const app = express();
 const port = 5000;
@@ -59,6 +60,4 @@ app.get('/deal-of-the-day', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Backend server running on ${port}`);
-});
+module.exports.handler = serverless(app);
