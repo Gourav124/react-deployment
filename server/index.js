@@ -1,7 +1,6 @@
 const express = require('express');
 const { Pool } = require('pg');
-const cors = require('cors');
-const serverless = require('serverless-http');
+//const cors = require('cors');
 
 const app = express();
 const port = 5000;
@@ -10,7 +9,7 @@ const pool = new Pool({
   connectionString: 'postgresql://neondb_owner:npg_FCecHIZ27wBR@ep-delicate-moon-a1o5r42f-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
 });
 
-app.use(cors());
+app.use(express.json());
 
 app.get('/categories', async (req, res) => {
   try {
@@ -60,5 +59,4 @@ app.get('/deal-of-the-day', async (req, res) => {
   }
 });
 
-module.exports = app;
-module.exports.handler = serverless(app);
+app.listen(process.env.PORT,() => console.log(`Server is running on port ${port}`));
