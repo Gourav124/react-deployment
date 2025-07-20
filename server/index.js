@@ -60,4 +60,5 @@ app.get('/deal-of-the-day', async (req, res) => {
   }
 });
 
+module.exports = app;
 module.exports.handler = serverless(app);
