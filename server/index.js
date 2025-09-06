@@ -20,6 +20,15 @@ app.get('/categories', async (req, res) => {
   }
 });
 
+app.get('/product_variants', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM product_variants');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/products', async (req, res) => {
   const { category } = req.query;
   try {
