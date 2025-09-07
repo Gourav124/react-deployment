@@ -38,7 +38,27 @@ app.get('/products', async (req, res) => {
     } else {
       result = await pool.query('SELECT * FROM products');
     }
-    res.json(result.rows);
+    const products = result.rows;
+
+       const productIds = products.map(p => p.id);
+    let variants = [];
+
+    if (productIds.length > 0) {
+      const variantResult = await pool.query(
+        'SELECT * FROM product_variant WHERE product_id = ANY($1)',
+        [productIds]
+      );
+      variants = variantResult.rows;
+    }
+
+    // 3. Attach variants to products
+    const productsWithVariants = products.map(product => ({
+      ...product,
+      product_variants: variants.filter(v => v.product_id === product.id)
+    }));
+
+    res.json(productsWithVariants);
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
