@@ -44,6 +44,33 @@ app.get('/products', async (req, res) => {
   }
 });
 
+app.get('/products/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Fetch product details
+    const productResult = await pool.query('SELECT * FROM products WHERE id = $1', [id]);
+
+    if (productResult.rows.length === 0) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const product = productResult.rows[0];
+
+    // Fetch variants for this product
+    const variantResult = await pool.query(
+      'SELECT * FROM product_variants WHERE product_id = $1',
+      [id]
+    );
+
+    product.variants = variantResult.rows;
+
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 app.get('/banners', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM banners');
