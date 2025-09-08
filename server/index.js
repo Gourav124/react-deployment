@@ -95,4 +95,20 @@ app.get('/deal-of-the-day', async (req, res) => {
   }
 });
 
+// backend (Node.js + Express + Postgres or MySQL)
+app.get("/product/:id/variants", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const variants = await pool.query(
+      "SELECT * FROM product_variants WHERE product_id = $1",
+      [id]
+    );
+    res.json(variants.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error fetching product variants" });
+  }
+});
+
+
 app.listen(process.env.PORT,() => console.log(`Server is running on port ${port}`));
